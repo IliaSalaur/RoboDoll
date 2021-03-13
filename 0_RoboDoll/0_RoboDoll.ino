@@ -21,18 +21,18 @@
 #define ACT_PIN_FWD 8
 #define ACT_PIN_REV 9
 #define ACT_PERIOD 7000
-#define LED_R_PIN 5
+#define LED_R_PIN 4
 #define LED_G_PIN 6
 #define LED_B_PIN 7
 
 #define RGB_PERIOD 500
 
-#define CARD_TRICK_DURATION 30000
+#define CARD_TIME 30000
 
 //#define USE_SENS_BUTT //Сенсорная кнопка
 #define SENS_SWITCH_PIN 13
 
-#define SERVO_PIN 4
+#define SERVO_PIN 5
 #define SERVO_ANGLE 150
 #define HEART_DURATION 4000
 #define HEART_LED_PIN 3
@@ -40,7 +40,7 @@
 // _________НАСТРОЙКИ_________
 
 
-SoftwareSerial player(10 , 11); // D10 - TX D11 - RX
+SoftwareSerial player(11, 10); // D10 - TX D11 - RX
 Servo heartServo;
 RCSwitch mySwitch = RCSwitch();
 
@@ -74,6 +74,9 @@ void setup() {
   pinMode(SENS_SWITCH_PIN, INPUT);
 #endif
 
+  digitalWrite(ACT_PIN_FWD, HIGH);
+  digitalWrite(ACT_PIN_REV, HIGH);
+
   delay(1000);
   DEBUG("EEPROM CHECK");
   EEPROM.get(0, eepConf);
@@ -90,16 +93,26 @@ void setup() {
   else
   {
     DEBUG("Getting config");
-    while(configComm() == 0){}
+    while (configComm() == 0) {}
     DEBUG("Config ready");
     DEBUG(conf.bow_butt);
     DEBUG(conf.card_butt);
     DEBUG(conf.heart_butt);
   }
-  
+
 }
 
 void loop() {
   effectHandler(checkComm());
-
+  if (Serial.available())
+  {
+    if(Serial.read() == 'e') 
+    {
+      for(int i = 0;i<20;i++)
+      {
+        EEPROM.write(i,0);
+      }
+      Serial.flush();
+    }
+  }
 }

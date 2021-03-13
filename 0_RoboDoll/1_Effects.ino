@@ -61,8 +61,13 @@ void tickRGB()
 
 void cardTrick()
 {
+  static  uint32_t  timer = millis();
   mp3_play(2);
   DEBUG("CARD: play");
+  while(millis() - timer < CARD_TIME)
+  {
+    DEBUG("DEBUG: card trick in progress");
+  }
 }
 
 
@@ -85,7 +90,7 @@ void openHeart()
     {
       heartServo.write(0);
       digitalWrite(HEART_LED_PIN, LOW);
-      DEBUG("HEART: Servo closw heart , led off");
+      DEBUG("HEART: Servo close heart , led off");
       break;
     }
   }
@@ -109,6 +114,7 @@ void effectHandler(int effectNumb)
       openHeart();
       break;
   }
+  mySwitch.resetAvailable();
   effectNumb = 0;
 }
 
@@ -119,7 +125,7 @@ void bow()
   bool work = 1;
   byte stage = 2;
 
-  digitalWrite(ACT_PIN_FWD, HIGH);
+  digitalWrite(ACT_PIN_FWD, LOW);
   mp3_play(1);
 
   DEBUG(F("BOW:ACT is on , music is playing"));
@@ -131,15 +137,15 @@ void bow()
       DEBUG("BOW:RGB tick");
     }
     if (millis() - timer1 >= ACT_PERIOD && stage == 2) {
-      digitalWrite(ACT_PIN_FWD, LOW);
-      digitalWrite(ACT_PIN_REV, HIGH);
+      digitalWrite(ACT_PIN_FWD, HIGH);
+      digitalWrite(ACT_PIN_REV, LOW);
       timer1 = millis();
       DEBUG("BOW:ACT reverse");
       stage = 3;
     }
     if (millis() - timer1 >= ACT_PERIOD && stage == 3)
     {
-      digitalWrite(ACT_PIN_REV, LOW);
+      digitalWrite(ACT_PIN_REV, HIGH);
       digitalWrite(LED_R_PIN, LOW);
       digitalWrite(LED_G_PIN, LOW);
       digitalWrite(LED_B_PIN, LOW);

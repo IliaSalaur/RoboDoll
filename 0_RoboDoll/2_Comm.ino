@@ -11,7 +11,9 @@ bool configComm()
     }
     mySwitch.resetAvailable();
   }
-
+  mySwitch.resetAvailable();
+  delay(4000);
+  mySwitch.resetAvailable();
   while (conf.card_butt == 0)
   {
     if (mySwitch.available())
@@ -22,8 +24,10 @@ bool configComm()
     }
     mySwitch.resetAvailable();
   }
-
-  while (conf.heart_butt == 0)
+  mySwitch.resetAvailable();
+  delay(4000);
+  mySwitch.available();
+  while (conf.heart_butt == 0 || conf.heart_butt == conf.card_butt)
   {
     if (mySwitch.available())
     {
