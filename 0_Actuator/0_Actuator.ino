@@ -7,13 +7,13 @@ class Actuator
     bool _lowSignal = 0;
     
   public:
-    Actuator(rev_pin, fwd_pin, bool standartSignal);
+    Actuator(int rev_pin, int fwd_pin, bool standartSignal);
     void reverse();
     void forward();
     void stop();
 };
 
-Actuator::Actuator(rev_pin, fwd_pin, bool standartSignal = 1)
+Actuator::Actuator(int rev_pin, int fwd_pin, bool standartSignal = 1)
 {
   _rev_pin = rev_pin;
   _fwd_pin = fwd_pin;
@@ -42,13 +42,13 @@ void Actuator::reverse()
 
 void Actuator::forward()
 {
+  this->stop();
   digitalWrite(_rev_pin, _lowSignal);
   digitalWrite(_fwd_pin, _highSignal);
 }
 
 void Actuator::stop()
 {
-  this->stop();
   digitalWrite(_rev_pin, _lowSignal);
   digitalWrite(_fwd_pin, _lowSignal);
 }

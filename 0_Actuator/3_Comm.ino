@@ -95,7 +95,7 @@ int checkComm()
     {
       last_receive = conf.head_butt;
       timer1 = millis();
-      toReturn = 3;
+      toReturn = 4;
     }
 
   }

@@ -18,16 +18,17 @@
 
 
 // _________НАСТРОЙКИ_________
-#define ACT1_PIN_FWD 8
-#define ACT1_PIN_REV 9
+#define ACT1_PIN_FWD 7
+#define ACT1_PIN_REV 6
 
-#define ACT2_PIN_FWD 8
-#define ACT2_PIN_REV 9
+#define ACT2_PIN_FWD 9//9
+#define ACT2_PIN_REV 8//8
 
 #define ACT_PERIOD 7000
-#define LED_R_PIN 4
-#define LED_G_PIN 6
-#define LED_B_PIN 7
+#define HEAD_PERIOD 3000
+#define LED_R_PIN 10
+#define LED_G_PIN 11
+#define LED_B_PIN 12
 
 #define RGB_PERIOD 500
 
@@ -36,15 +37,15 @@
 //#define USE_SENS_BUTT //Сенсорная кнопка
 #define SENS_SWITCH_PIN 13
 
-#define SERVO_PIN 5
+#define SERVO_PIN 3
 #define SERVO_ANGLE 150
 #define HEART_DURATION 4000
-#define HEART_LED_PIN 3
+#define HEART_LED_PIN 13
 
 // _________НАСТРОЙКИ_________
 
 
-SoftwareSerial player(11, 10); // D10 - TX D11 - RX
+SoftwareSerial player(4, 5); // D10 - TX D11 - RX
 Servo heartServo;
 RCSwitch mySwitch = RCSwitch();
 
@@ -53,7 +54,9 @@ Actuator headAct(ACT2_PIN_REV, ACT2_PIN_FWD);
 
 bool useRGB;
 bool useMP3;
+bool state = 0;
 uint32_t last_receive;
+uint32_t headTimer = 0;
 
 struct commConf
 {
@@ -87,8 +90,6 @@ void setup() {
   pinMode(SENS_SWITCH_PIN, INPUT);
 #endif
 
-  digitalWrite(ACT_PIN_FWD, HIGH);
-  digitalWrite(ACT_PIN_REV, HIGH);
 
   delay(1000);
   DEBUG("EEPROM CHECK");
@@ -99,9 +100,11 @@ void setup() {
     DEBUG(eepConf.bow_butt);
     DEBUG(eepConf.card_butt);
     DEBUG(eepConf.heart_butt);
+    DEBUG(eepConf.head_butt);
     conf.bow_butt = eepConf.bow_butt;
     conf.card_butt = eepConf.card_butt;
     conf.heart_butt = eepConf.heart_butt;
+    conf.head_butt = eepConf.head_butt;
   }
   else
   {
@@ -112,7 +115,7 @@ void setup() {
     DEBUG(conf.card_butt);
     DEBUG(conf.heart_butt);
   }
-
+Serial.println("Setup Done");
 }
 
 void loop() {
@@ -128,4 +131,5 @@ void loop() {
       Serial.flush();
     }
   }
+  if(millis() - headTimer > HEAD_PERIOD)  headAct.stop();
 }

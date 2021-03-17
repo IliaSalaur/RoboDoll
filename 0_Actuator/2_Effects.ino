@@ -1,8 +1,25 @@
 void tickRGB()
 {
-  digitalWrite(LED_R_PIN, random(1));
-  digitalWrite(LED_G_PIN, random(1));
-  digitalWrite(LED_B_PIN, random(1));
+  Serial.println(millis()%3);
+  int millisMod = millis() % 3;
+//  bool rgbChange = (millisMod == 2) ? 1:millisMod;
+  switch(millisMod)
+  {
+    case 0:
+    digitalWrite(LED_R_PIN, HIGH);
+    digitalWrite(LED_B_PIN, LOW);
+    break;
+
+    case 1:
+    digitalWrite(LED_G_PIN, HIGH);
+    digitalWrite(LED_R_PIN, LOW);
+    break;
+
+    case 2:
+    digitalWrite(LED_B_PIN, HIGH);
+    digitalWrite(LED_G_PIN, LOW);
+    break;
+  }
 }
 
 
@@ -13,7 +30,7 @@ void cardTrick()
   DEBUG("CARD: play");
   while(millis() - timer < CARD_TIME)
   {
-    DEBUG("DEBUG: card trick in progress");
+    DEBUG(F("DEBUG: card trick in progress"));
   }
 }
 
@@ -57,11 +74,11 @@ void effectHandler(int effectNumb)
       cardTrick();
       break;
     case 3:
-      DEBUG("HANDLER: heart");
+      DEBUG(F("HANDLER: heart"));
       openHeart();
       break;
     case 4:
-      DEBUG("HANDLER: head");
+      DEBUG(F("HANDLER: head"));
       head();
       break;
   }
@@ -108,17 +125,17 @@ void bow()
 
 void head()
 {
-  static bool state;
-  if(state != 0)
+  headTimer = millis();
+  if(state == 1)
   {
     state = 0;
     headAct.reverse();
-    DEBUG(String("HEAD:Reverse, state is ") + String(state));
+    DEBUG(F("HEAD:Reverse, state is 0"));
   }
   else
   {
     state = 1;
     headAct.forward();
-    DEBUG(String("HEAD:Forward, state is ") + String(state));
+    DEBUG(F("HEAD:Forward, state is 1"));
   }
 }
